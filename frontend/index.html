@@ -150,7 +150,11 @@
 
         async function generateFraction() {
             try {
-                return await backend.generateFraction();
+                const result = await backend.generateFraction();
+                return {
+                    numerator: Number(result.numerator),
+                    denominator: Number(result.denominator)
+                };
             } catch (error) {
                 console.error("Error generating fraction:", error);
                 return { numerator: 1, denominator: 4 };
@@ -158,21 +162,25 @@
         }
 
         async function startNewRound() {
-            fraction = await generateFraction();
-            userGuess = 0.5;
-            score = null;
-            animationStep = 0;
-            document.getElementById('guess-slider').value = 0.5;
-            document.getElementById('fraction-display').textContent = `Where does ${fraction.numerator}/${fraction.denominator} go on the line?`;
-            document.getElementById('result').style.display = 'none';
-            clearInterval(animationInterval);
-            renderFractionVisual();
+            try {
+                fraction = await generateFraction();
+                userGuess = 0.5;
+                score = null;
+                animationStep = 0;
+                document.getElementById('guess-slider').value = 0.5;
+                document.getElementById('fraction-display').textContent = `Where does ${fraction.numerator}/${fraction.denominator} go on the line?`;
+                document.getElementById('result').style.display = 'none';
+                clearInterval(animationInterval);
+                renderFractionVisual();
+            } catch (error) {
+                console.error("Error starting new round:", error);
+            }
         }
 
         async function checkGuess() {
             try {
                 const actualValue = fraction.numerator / fraction.denominator;
-                score = await backend.checkGuess(fraction, userGuess);
+                score = Number(await backend.checkGuess(fraction, userGuess));
                 
                 document.getElementById('user-guess').textContent = `Your guess: ${userGuess.toFixed(2)}`;
                 document.getElementById('correct-answer').textContent = `Correct answer: ${actualValue.toFixed(2)}`;

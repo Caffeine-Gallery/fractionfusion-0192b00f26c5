@@ -27,12 +27,12 @@ actor {
     
     let denominator = switch (generator.range(Nat8.fromNat(9))) {
       case null { 2 };
-      case (?value) { value + 2 }; // 2 to 11
+      case (?value) { Nat.max(value + 2, 2) }; // 2 to 11
     };
     
-    let numerator = switch (generator.range(Nat8.fromNat(Nat.min(denominator - 1, 255)))) {
+    let numerator = switch (generator.range(Nat8.fromNat(Nat.max(denominator - 1, 1)))) {
       case null { 1 };
-      case (?value) { value + 1 }; // 1 to denominator-1
+      case (?value) { Nat.min(value + 1, denominator - 1) }; // 1 to denominator-1
     };
     
     { numerator = numerator; denominator = denominator }
