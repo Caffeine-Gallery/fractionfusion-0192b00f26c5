@@ -1,0 +1,15 @@
+type Score = 
+ record {
+   timestamp: int;
+   value: nat;
+ };
+type Fraction = 
+ record {
+   denominator: nat;
+   numerator: nat;
+ };
+service : {
+  checkGuess: (Fraction, float64) -> (nat);
+  generateFraction: () -> (Fraction);
+  getHighScores: () -> (vec Score) query;
+}
